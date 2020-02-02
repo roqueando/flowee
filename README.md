@@ -7,8 +7,14 @@ A simple logger that every service can communicate with him.
 ### default structure
 ```json
 {
-  "type": 'error', //available types ['error', 'warning', 'success', 'failed'],
-	"save": true, // save is not required, but if true, will save on src/log folder,
-	"message": "lorem ipsum" // all message which u will set
+  "type": "error",
+	"save": true,
+	"message": "lorem ipsum"
 }
 ``````
+
+### Type
+The available types is 
+`error` -> All errors that u have set (will become in red color)
+`save` -> not required, but if u set true, will save in `src/log` folder
+`message` -> the message which u will set to log
