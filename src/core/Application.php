@@ -14,15 +14,31 @@ class Application
 
   protected $stream;
   protected $clients = [];
-  protected $running;
+	protected $running;
+	public static $server;
+	public static $instance;
 
   public function __construct()
   {
     set_time_limit(0);
-    ob_implicit_flush();
+		ob_implicit_flush();
     $this->logo();
   }
+	
+	public static function getInstance() {
+		if(self::$instance === null) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
 
+	public static function getServerInstance() {
+		return self::$server;
+	}
+
+	private function setInstance(Server $server) {
+		self::$server = $server;
+	}
 	/** 
 	 * Run the flowee server instance
 	 *
@@ -36,7 +52,8 @@ class Application
     $loop = Factory::create();
 
     $server = new Server("$host:$port", $loop);
-
+		
+		$this->setInstance($server);
     $server->on('connection', function (ConnectionInterface $socket) {
       echo Timer::exec() . "a connection was estabilished (".$socket->getRemoteAddress().")\n";
 
@@ -46,7 +63,7 @@ class Application
         (new Data($data))->log();
       });
     });
-
+		
     $loop->run();
   }
 
@@ -68,5 +85,9 @@ class Application
     A simple logger server that can connect with all other services.
     Built in PHP by Vitor Roque - 2020 - @roqueando.
     ';
-  }
+	}
+
+	public function close(): void {
+		$this->server->close();
+	}
 }
