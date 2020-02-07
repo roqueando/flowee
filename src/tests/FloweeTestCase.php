@@ -7,11 +7,7 @@ use Flowee\Core\Application;
 class FloweeTestCase extends TestCase {
 	protected $managerPid;
 
-	public function setUp(): void {
-		parent::setUp();
-	}	
-
-	public function tearDown(): void {
+  public function tearDown(): void {
 		$this->stopServer();
 	}
 	
