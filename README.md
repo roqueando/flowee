@@ -7,16 +7,15 @@ A simple logger made in PHP that every service can communicate with him.
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
 
 ### prerequisites
-`
 - PHP 7
 - Composer
-`
+
 ### installing
 Install all dependencies
 `composer install`
-Then run flowee
-`php flowee.php`
-You will see a Flowee logo
+then run flowee
+`php flowee.php` and
+you will see a Flowee logo
 
 ## running tests
 `./vendor/bin/phpunit src/tests`
