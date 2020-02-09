@@ -4,15 +4,35 @@ namespace Flowee\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Flowee\Core\Application;
+use ReflectionClass;
+
 class FloweeTestCase extends TestCase {
 	protected $managerPid;
+  public static $testOutput;
 
   public function tearDown(): void {
 		$this->stopServer();
 	}
 	
+  protected function cleanLogs(string $folder = ''): void {
+    if($_ENV['APP_ENV'] === 'testing') {
+      $files = glob('src/log/*.log');
+      if(isset($folder) && !empty($folder)) {
+        $files = glob("src/log/$folder/*.log");
+      }
+      foreach($files as $file) {
+        if(is_file($file)) {
+          unlink($file);
+        }
+      }
+    }
+  }
   protected function shouldSeeManagerOutput($content) {
-    $this->assertContains($content, file_get_contents('src/tests/.output/manager.log'), "Couldn't find '$content' in manager.log");
+    $this->assertContains(
+      $content, 
+      file_get_contents('src/tests/.output/manager.log'), 
+      "Couldn't find '$content' in manager.log"
+    );
   }
 	public function stopServer() {
     file_put_contents('src/tests/.output/manager.log', '');
@@ -26,4 +46,5 @@ class FloweeTestCase extends TestCase {
     );
     sleep(1);
 	}
+
 }
