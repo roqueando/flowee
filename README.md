@@ -1,34 +1,53 @@
-
-              ▛▀▘▜              
-              ▙▄ ▐ ▞▀▖▌  ▌▞▀▖▞▀▖
-              ▌  ▐ ▌ ▌▐▐▐ ▛▀ ▛▀ 
-              ▘   ▘▝▀  ▘▘ ▝▀▘▝▀▘ 
-
-A simple logger that every service can communicate with him.
+# Flowee
+A simple logger made in PHP that every service can communicate with him.
 
 [![CodeFactor](https://www.codefactor.io/repository/github/roqueando/flowee/badge)](https://www.codefactor.io/repository/github/roqueando/flowee)
 
-### install
+## getting started
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
+
+### prerequisites
+`
+- PHP 7
+- Composer
+`
+### installing
+Install all dependencies
 `composer install`
+Then run flowee
+`php flowee.php`
+You will see a Flowee logo
 
-### tests
-these tests use phpunit 8 so, to run `./vendor/bin/phpunit src/tests`
+## running tests
+`./vendor/bin/phpunit src/tests`
 
-### default structure
+### step-by-step
+#### should init server
+will test if the TCP server has been started correctly
+
+#### should receive data
+will test if the server received the socket data correctly
+
+#### should check data correctly
+test if data has in correct structure
+
+#### should not save logs in root
+test if logs will be saved in `src/log`
+
+#### should save logs in respectively folders
+test if all logs will be saved on correctly folders by error type
+
+## structure
 ```json
 {
   "type": "error",
-	"save": true,
-	"message": "lorem ipsum"
+  "save": true,
+  "message": "something"
 }
-``````
 
+```
 ### type
-The available types is <br/> 
-`error`  All errors that u have set (will become in red color) <br/>
-`warning`  All warning that u have set (will become in yellow color) <br/>
-`success`  All success that u have set (will become in green color) <br/>
-`fail`  All fail that u have set (will become in magenta color) <br/>
+The `type` key is what kind of error will set in log, and save to the respectively log folder. Having in the first version only 4 types. `error`, `fail`, `success` and `warning`
 
 ### save
 The `save` key is not required but, if set to true, will save in `src/log` folder, all logs
@@ -36,10 +55,9 @@ The `save` key is not required but, if set to true, will save in `src/log` folde
 ### message
 The `message`key is required because will save in details all errors message, exceptions and etc.
 
+## built with
+* [ReactPHP](https://github.com/reactphp/socket) - EventLoop TCP Server
+* [Composer](https://getcomposer.org/) - Package manager
 
-### connecting
-to connect to flowee you must connect via tcp using anyone language that u want. (check the src/tests which have an example in PHP) <br/>
-
-in `tests/node` folder when u run `node test.js` will send a data to flowee (must be running), and save the log file. <br/>
-
-I recommend to create your own flowee client using the tcp client of your choice, like in Node.js I used `net` module.
+## authors
+* **Vitor Roque** - **owner** - [roqueando](https://github.com/roqueando)
