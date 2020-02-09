@@ -24,18 +24,23 @@ class Data {
 	private function handleError($dataType) {
 		$type = strtoupper($dataType);
 		$colorNumber = '39';
+    $folder = '';
 		switch($dataType) {
 			case 'error':
 				$colorNumber = '31';
+        $folder = 'errors';
 				break;
 			case 'warning':
 				$colorNumber = '33';
+        $folder = 'warnings';
 				break;
 			case 'success':
 				$colorNumber = '92';
+        $folder = 'successes';
 				break;
 			case 'fail':
 				$colorNumber = '35';
+        $folder = 'faileds';
 				break;
 			default:
 				$colorNumber = '39';
@@ -46,7 +51,7 @@ class Data {
 		echo $message;
 		if($this->logFile) {
 			$filename = Timer::fileTime();
-			$filepath =  dirname(dirname(__FILE__)) . '/log';
+			$filepath =  dirname(dirname(__FILE__)) . '/log/'. $folder;
 			file_put_contents("{$filepath}/{$filename}.log", $message);
 		}
   }
