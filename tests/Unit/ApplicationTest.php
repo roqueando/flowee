@@ -1,6 +1,6 @@
 <?php
-namespace Flowee\Tests;
-use Flowee\Tests\FloweeTestCase;
+namespace Tests\Unit;
+use Tests\FloweeTestCase;
 
 class ApplicationTest extends FloweeTestCase {
 	
@@ -13,7 +13,7 @@ class ApplicationTest extends FloweeTestCase {
   /** @test **/
   public function should_init_server() {
     $this->runServer();
-    $server_log = file_get_contents('src/tests/.output/manager.log');
+    $server_log = file_get_contents('tests/.output/manager.log');
     $this->assertNotEmpty($server_log);
   }
 
@@ -26,7 +26,7 @@ class ApplicationTest extends FloweeTestCase {
     stream_socket_sendto($socket, json_encode($data));
 
     sleep(1);
-    $log = file_get_contents('src/tests/.output/manager.log');
+    $log = file_get_contents('tests/.output/manager.log');
     $this->assertStringContainsString($data->message, $log);
     $this->cleanLogs();
   }
