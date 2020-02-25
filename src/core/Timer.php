@@ -9,7 +9,7 @@ final class Timer {
 	}
 
 	public static function fileTime(){
-		$name = date('YmdHis') . md5(time());
+		$name = date('YmdHis');
 		return $name;
 	}
 }

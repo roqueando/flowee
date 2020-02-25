@@ -14,6 +14,8 @@ class ApplicationTest extends FloweeTestCase {
   public function should_init_server() {
     $this->runServer();
     $server_log = file_get_contents('tests/.output/manager.log');
+
+    // check if the logo and server was initiated
     $this->assertNotEmpty($server_log);
   }
 
@@ -22,8 +24,7 @@ class ApplicationTest extends FloweeTestCase {
     $this->runServer();
     $data = $this->prepareData('error');
 
-    $socket = stream_socket_client('tcp://127.0.0.1:8000');
-    stream_socket_sendto($socket, json_encode($data));
+    $this->createSocketAndSendData($data);
 
     sleep(1);
     $log = file_get_contents('tests/.output/manager.log');
@@ -37,53 +38,43 @@ class ApplicationTest extends FloweeTestCase {
   }
   
   /** @test **/
-  public function should_not_save_logs_in_root() {
-    $this->runServer();
-    $data = $this->prepareData('error');
-    $this->createSocketAndSendData($data);
-
-    sleep(1);
-    $files = glob("src/log/*.log");
-    $this->assertEquals(0, count($files));
-  }
-
-  /** @test **/
-  public function should_save_logs_in_respectively_folders() {
+  public function should_save_on_right_moment() {
     $this->runServer();
 
-    $data = $this->getAllData();
-    foreach($data as $d => $value) {
-      $this->createSocketAndSendData($value);
-    }
+    // Prepare data object for error and debug
+    // error will not save
+    // debug will save a log file
+    $dataError = $this->prepareData('error');
+    $dataDebug = $this->prepareData('debug', true);
 
-    sleep(1);
+    // Creating a socket and sending to flowee
+    $this->createSocketAndSendData($dataError);
+    $this->createSocketAndSendData($dataDebug);
     
-    foreach($data as $log => $content) {
-      $this->assertDirectoryExists("src/log/$log");
-      $files = glob("src/log/$log/*.log");
-      $this->assertGreaterThan(0, $files);
+    sleep(1);
 
-      $filename = $files[0];
-      $this->assertFileExists("$filename");
-      $fileContent = file_get_contents("$filename");
-      $this->assertStringContainsString($content->message, $fileContent);
-      $this->cleanLogs($log);
-    }
+    // declare the data type logs
+    $dataTypeError = strtoupper($dataError->type);
+    $dataTypeDebug = strtoupper($dataDebug->type);
+    
+    // searching for debug type logs
+    $filesDebug = glob("src/log/{$dataTypeDebug}_*.log");
+    $filesError = glob("src/log/{$dataTypeError}_*.log");
+    
+    $this->assertGreaterThan(0, count($filesDebug));
+    $this->assertEquals(0, count($filesError));
+    $this->cleanLogs();
   }
-
-  private function getAllData(): array {
-    return [
-      'errors' => $this->prepareData('error', true),
-      'warnings' => $this->prepareData('warning', true),
-      'successes' => $this->prepareData('success', true),
-      'faileds' => $this->prepareData('fail', true)
-    ];
-  }
-
+  /**
+   * Create a socket stream client and send a socket message
+   * @param object $data
+   * @return void
+   */
   private function createSocketAndSendData(object $data): void {
     $socket = stream_socket_client('tcp://127.0.0.1:8000');
     stream_socket_sendto($socket, json_encode($data));
   }
+
   /**
    * Preparing a object data
    * @param String $type
@@ -96,7 +87,6 @@ class ApplicationTest extends FloweeTestCase {
       'save' => $saving,
       'message' => "default error with type $type ."
     ];
-
     return $arr;
   }
 }
