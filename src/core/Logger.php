@@ -163,7 +163,7 @@ class Logger implements LoggerInterface {
       }
     }
     $msg = strtr($message, $replace);
-    $string = Timer::exec() . self::getLevelColor($level) . ' ' . $msg;
+    $string = Timer::exec() . self::getLevelColor($level) . ' ' . $msg . "\n";
 
     return $string;
   }
