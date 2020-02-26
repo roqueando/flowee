@@ -3,40 +3,21 @@ A simple logger made in PHP that every service can communicate with him.
 
 [![CodeFactor](https://www.codefactor.io/repository/github/roqueando/flowee/badge)](https://www.codefactor.io/repository/github/roqueando/flowee)
 
-## getting started
+## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. 
 
-### prerequisites
+### Prerequisites
 - PHP 7
 - Composer
 
-### installing
+### Installing
 Install all dependencies
-`composer install`
-then run flowee
-`php flowee.php` and
-you will see a Flowee logo
+`composer install` then run flowee `php flowee.php` and you will see a Flowee logo
 
-## running tests
-`./vendor/bin/phpunit src/tests`
+## Running tests
+`php vendor/bin/phpunit`
 
-### step-by-step
-#### should init server
-will test if the TCP server has been started correctly
-
-#### should receive data
-will test if the server received the socket data correctly
-
-#### should check data correctly
-test if data has in correct structure
-
-#### should not save logs in root
-test if logs will be saved in `src/log`
-
-#### should save logs in respectively folders
-test if all logs will be saved on correctly folders by error type
-
-## structure
+## Basic Structure
 ```json
 {
   "type": "error",
@@ -54,9 +35,9 @@ The `save` key is not required but, if set to true, will save in `src/log` folde
 ### message
 The `message`key is required because will save in details all errors message, exceptions and etc.
 
-## built with
+## Built with
 * [ReactPHP](https://github.com/reactphp/socket) - EventLoop TCP Server
 * [Composer](https://getcomposer.org/) - Package manager
 
-## authors
+## Authors
 * **Vitor Roque** - **owner** - [roqueando](https://github.com/roqueando)
