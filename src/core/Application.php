@@ -8,20 +8,23 @@ use React\Socket\Server;
 use React\Socket\ConnectionInterface;
 use Flowee\Core\Data;
 use Flowee\Core\Timer;
+use Flowee\Core\Logger;
 
+/**
+ * Manage the entire application
+ * @author Vitor Roque
+ */
 class Application
 {
 
-  protected $stream;
-  protected $clients = [];
-	protected $running;
-	public static $server;
+  protected $logger;
 	public static $instance;
 
   public function __construct()
   {
     set_time_limit(0);
 		ob_implicit_flush();
+    $this->logger = new Logger;
     $this->logo();
   }
 	
@@ -32,13 +35,6 @@ class Application
 		return self::$instance;
 	}
 
-	public static function getServerInstance() {
-		return self::$server;
-	}
-
-	private function setInstance(Server $server) {
-		self::$server = $server;
-	}
 	/** 
 	 * Run the flowee server instance
 	 *
@@ -49,32 +45,33 @@ class Application
 	 * **/
   public function run(string $host = '127.0.0.1', int $port = 8000): void
   {
-    $loop = Factory::create();
+    try {
+      $loop = Factory::create();
 
-    $server = new Server("$host:$port", $loop);
+      $server = new Server("$host:$port", $loop);
 		
-		$this->setInstance($server);
-    $server->on('connection', function (ConnectionInterface $socket) {
-      echo Timer::exec() . "a connection was estabilished (".$socket->getRemoteAddress().")\n";
+      $server->on('connection', function (ConnectionInterface $socket) {
+        echo Timer::exec() . "a connection was estabilished (".$socket->getRemoteAddress().")\n";
 
-      $socket->on('data', function($data) use ($socket) {
-        // always that a data comes
-				// will create a new Data instance and manipulate that returning the exactly log.	
-        (new Data($data))->log();
+        $socket->on('data', function($data) {
+          // always that a data comes
+          // will create a new Data instance and manipulate that returning the exactly log.	
+          (new Data($data, $this->logger))->handle();
+        });
       });
-    });
 		
-    $loop->run();
+      $loop->run();
+
+    } catch(Exception $err) {
+      $errorMessage = "[{$err->getCode}]: {$err->getMessage()} on line {$err->getLine()}";
+      echo $this->logger->critical($errorMessage);
+    }
   }
 
-  private function error($socket): Exception
-  {
-    $timer = date('H:i:s');
-    $last_error = socket_strerror(socket_last_error($socket));
-    $message = "[$timer]: $last_error";
-    throw new Exception($message);
-  }
-
+  /**
+   * Prints logo into console
+   * @return void
+   */
   private function logo(): void
   {
     echo '
@@ -84,10 +81,8 @@ class Application
               ▘   ▘▝▀  ▘▘ ▝▀▘▝▀▘
     A simple logger server that can connect with all other services.
     Built in PHP by Vitor Roque - 2020 - @roqueando.
+    CTRL + C to stop server.
     ';
 	}
 
-	public function close(): void {
-		$this->server->close();
-	}
 }
