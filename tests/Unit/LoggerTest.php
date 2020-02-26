@@ -5,10 +5,6 @@ use Flowee\Core\Logger;
 
 class LoggerTest extends FloweeTestCase {
   
-  public function setUp(): void {
-    parent::setUp();
-  }
-
   /** @test **/
   public function should_return_correctly_log() {
     $logger = new Logger();

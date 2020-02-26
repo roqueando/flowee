@@ -88,7 +88,7 @@ class Logger implements LoggerInterface {
     return static::$levels;
   }
 
-  public static function getLevelName(int $levelNumber): string
+  public function getLevelName(int $levelNumber): string
   {
     if(!isset(static::$levels[$levelNumber])) {
       $this->handleError($levelNumber);
@@ -96,7 +96,7 @@ class Logger implements LoggerInterface {
     return static::$levels[$levelNumber]['name'];
   }
 
-  public static function getLevelColor(int $levelNumber): string
+  public function getLevelColor(int $levelNumber): string
   {
     if(!isset(static::$levels[$levelNumber])) {
       $this->handleError($levelNumber);
@@ -163,7 +163,7 @@ class Logger implements LoggerInterface {
       }
     }
     $msg = strtr($message, $replace);
-    $string = Timer::exec() . self::getLevelColor($level) . ' ' . $msg . "\n";
+    $string = Timer::exec() . $this->getLevelColor($level) . ' ' . $msg . "\n";
 
     return $string;
   }
